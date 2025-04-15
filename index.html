@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Аналитика с графиком</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: white;
+      padding: 20px;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    table {
+      border-collapse: collapse;
+      margin: 0 auto;
+      width: 100%;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    th,
+    td {
+      border: 3px solid white;
+      padding: 12px;
+      text-align: center;
+      background-color: #f5f5f5;
+    }
+    
+    td:hover {
+      cursor: pointer;
+    }
+    
+    td:nth-child(2),
+    th:nth-child(2) {
+      background-color: #edf8ff;
+    }
+    
+    th {
+      background: #f7f7f7;
+      font-weight: bold;
+    }
+    
+    tr:hover {
+      background-color: #eef;
+    }
+    
+    .green {
+      background-color: #ecf7e7;
+    }
+    
+    .red {
+      background-color: #fee6e6;
+    }
+    
+    .positive {
+      color: green;
+      font-weight: bold;
+    }
+    
+    .negative {
+      color: red;
+      font-weight: bold;
+    }
+    
+    .chart-row {
+      display: none;
+      background: #f9f9f9;
+      transition: 1s;
+    }
+    
+    .chart-cell {
+      padding: 10px;
+      border: none;
+      transition: 2s;
+    }
+    
+    canvas {
+      width: 100% !important;
+      height: auto !important;
+      margin: 0 auto;
+      transition: 1s;
+    }
+    
+    .table-wrapper {
+      text-align: center;
+      display: inline-block;
+      background-color: #fff;
+      padding: 2rem 2rem;
+      color: #000;
+    }
+    
+    @media screen and (max-width: 600px) {
+      .table-wrapper {
+        overflow-x: scroll;
+        padding: 10px;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="table-wrapper">
+    <table id="dataTable">
+      <tr>
+        <th>Показатель</th>
+        <th>Текущий день</th>
+        <th>Вчера</th>
+        <th>Этот день недели</th>
+      </tr>
+
+      <tr class="data-row" data-chart="[0, 5, 6.5, 7.2, 7.8, 6.4, 6.1, 7.9]">
+        <td>Выручка, руб</td>
+        <td>500 521</td>
+        <td class="green">480 521 <span class='positive'>+4%</span></td>
+        <td class="red">4 805 121</td>
+      </tr>
+      <tr class="chart-row">
+        <td colspan="4" class="chart-cell">
+          <canvas></canvas>
+        </td>
+      </tr>
+
+      <tr class="data-row" data-chart="[300, 305, 310, 315, 320, 300, 300, 300]">
+        <td>Наличные</td>
+        <td>300 000</td>
+        <td>300 000 <span class='positive'>0%</span></td>
+        <td>300 000</td>
+      </tr>
+      <tr class="chart-row">
+        <td colspan="4" class="chart-cell">
+          <canvas></canvas>
+        </td>
+      </tr>
+
+      <tr class="data-row" data-chart="[100, 100, 100, 100, 100, 100, 100, 100]">
+        <td>Безналичный расчет</td>
+        <td>100 000</td>
+        <td>100 000 <span class='positive'>0%</span></td>
+        <td>100 000</td>
+      </tr>
+      <tr class="chart-row">
+        <td colspan="4" class="chart-cell">
+          <canvas></canvas>
+        </td>
+      </tr>
+
+      <tr class="data-row" data-chart="[100.521, 100.521, 100.521, 100.521, 100.521, 100.521, 100.521, 100.521]">
+        <td>Кредитные карты</td>
+        <td>100 521</td>
+        <td>100 521 <span class='positive'>0%</span></td>
+        <td>100 521</td>
+      </tr>
+      <tr class="chart-row">
+        <td colspan="4" class="chart-cell">
+          <canvas></canvas>
+        </td>
+      </tr>
+
+      <tr class="data-row" data-chart="[1300, 1200, 1100, 1000, 900, 1100, 1200, 1300]">
+        <td>Средний чек, руб</td>
+        <td>1 300</td>
+        <td class="green">900 <span class='positive'>+44%</span></td>
+        <td class="green">900</td>
+      </tr>
+      <tr class="chart-row">
+        <td colspan="4" class="chart-cell">
+          <canvas></canvas>
+        </td>
+      </tr>
+
+      <tr class="data-row" data-chart="[1200, 1100, 1000, 1000, 1100, 1200, 1300, 1200]">
+        <td>Средний гость, руб</td>
+        <td>1 200</td>
+        <td class="green">800 <span class='positive'>+50%</span></td>
+        <td class="green">800</td>
+      </tr>
+      <tr class="chart-row">
+        <td colspan="4" class="chart-cell">
+          <canvas></canvas>
+        </td>
+      </tr>
+
+      <tr class="data-row" data-chart="[1000, 1100, 1200, 1300, 1000, 1000, 1000, 1000]">
+        <td>Удаления из чека (после оплаты), руб</td>
+        <td>1 000</td>
+        <td class="red">1 100 <span class='negative'>-9%</span></td>
+        <td class="green">900</td>
+      </tr>
+      <tr class="chart-row">
+        <td colspan="4" class="chart-cell">
+          <canvas></canvas>
+        </td>
+      </tr>
+
+      <tr class="data-row" data-chart="[1300, 1300, 1300, 1300, 1300, 1300, 1300, 1300]">
+        <td>Удаления из чека (до оплаты), руб</td>
+        <td>1 300</td>
+        <td>1 300 <span class='positive'>0%</span></td>
+        <td class="green">900</td>
+      </tr>
+      <tr class="chart-row">
+        <td colspan="4" class="chart-cell">
+          <canvas></canvas>
+        </td>
+      </tr>
+
+      <tr class="data-row" data-chart="[36, 35, 34, 33, 34, 35, 36, 34]">
+        <td>Количество чеков</td>
+        <td>34</td>
+        <td class="red">36 <span class='negative'>-6%</span></td>
+        <td>32</td>
+      </tr>
+      <tr class="chart-row">
+        <td colspan="4" class="chart-cell">
+          <canvas></canvas>
+        </td>
+      </tr>
+
+      <tr class="data-row" data-chart="[36, 35, 34, 33, 34, 35, 36, 34]">
+        <td>Количество гостей</td>
+        <td>34</td>
+        <td class="red">36 <span class='negative'>-6%</span></td>
+        <td class="green">32</td>
+      </tr>
+      <tr class="chart-row">
+        <td colspan="4" class="chart-cell">
+          <canvas></canvas>
+        </td>
+      </tr>
+
+    </table>
+  </div>
+
+  <script>
+    const dataRows = document.querySelectorAll('.data-row');
+    const chartRows = document.querySelectorAll('.chart-row');
+    const charts = [];
+    dataRows.forEach((row, index) => {
+      const chartRow = chartRows[index];
+      const canvas = chartRow.querySelector('canvas');
+      const ctx = canvas.getContext('2d');
+      const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс', 'Сегодня'],
+          datasets: [{
+            label: 'График',
+            data: [],
+            borderColor: 'green',
+            fill: false,
+            tension: 0.3,
+            pointRadius: 4,
+            pointBackgroundColor: 'green'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: false
+            },
+            x: {
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+      charts.push(chart);
+      row.addEventListener('click', () => {
+        const chartData = JSON.parse(row.dataset.chart);
+        const isVisible = chartRow.style.display === 'table-row';
+        chartRows.forEach(r => r.style.display = 'none');
+        if (!isVisible) {
+          chartRow.style.display = 'table-row';
+          chart.data.datasets[0].data = chartData;
+          chart.update();
+        }
+      });
+    });
+  </script>
+
+</body>
+
+</html>
